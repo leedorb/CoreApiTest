@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using app.Dal;
+using app.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app.Controllers
@@ -22,7 +23,6 @@ namespace app.Controllers
                 if (list.Count != 0)
                 {
                     return Ok(list);
-                    //return new string[] { "value1", "value2" };
                 }
 
                 return new string[] { "Error", "db list empty" };
@@ -57,15 +57,9 @@ namespace app.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Person person)
         {
-            dbManager.InsertNewPerson(new Person
-            {
-                ID = value,
-                FirstName = "leedor",
-                LastName = "My Last Name",
-                Age = 38
-            });
+            dbManager.InsertNewPerson(person);
         }
 
         // PUT api/values/5

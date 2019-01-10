@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using app.Models;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System;
@@ -11,49 +12,40 @@ namespace app.Dal
     public class dbManager
     {
         //const string connectionString = "mongodb://localhost:27017";
-        //const string connectionString = "mongodb://mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017";
-        const string connectionString = "mongodb://mongouser:mongopass@mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017/" + dbName;
         const string dbName = "sampledb";
+        const string connectionString = "mongodb://mongouser:mongopass@mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017/" + dbName;
+        readonly static IMongoCollection<Person> userCollection;
+
+        static dbManager()
+        {
+            userCollection = setPersonCollection();
+        }
+
 
         public static List<Person> GetPersonsList()
         {
-            
-            // Create a MongoClient object by using the connection string
-            var client = new MongoClient(connectionString);
-
-            //Use the MongoClient to access the server
-            var database = client.GetDatabase(dbName);
-
-            //get mongodb collection
-            var collection = database.GetCollection<Person>("Persons");
-
-            var persons = collection.Find(p => true).ToList();
-            //await collection.InsertOneAsync(new Entity { Name = "Jack" });
+            //get persons list
+            var persons = userCollection.Find(p => true).ToList();
 
             return persons;
         }
+        
 
         public static Person GetPerson(string id)
         {
-
-            // Create a MongoClient object by using the connection string
-            var client = new MongoClient(connectionString);
-
-            //Use the MongoClient to access the server
-            var database = client.GetDatabase(dbName);
-
-            //get mongodb collection
-            var collection = database.GetCollection<Person>("Persons");
-
-            var person = collection.Find(p => p.ID == id).FirstOrDefault();
-            //await collection.InsertOneAsync(new Entity { Name = "Jack" });
+            //get specific person by id
+            var person = userCollection.Find(p => p.ID == id).FirstOrDefault();
 
             return person;
         }
 
         public static async void InsertNewPerson(Person person)
         {
+            await userCollection.InsertOneAsync(person);
+        }
 
+        private static IMongoCollection<Person> setPersonCollection()
+        {
             // Create a MongoClient object by using the connection string
             var client = new MongoClient(connectionString);
 
@@ -63,18 +55,7 @@ namespace app.Dal
             //get mongodb collection
             var collection = database.GetCollection<Person>("Persons");
 
-            await collection.InsertOneAsync(person);
+            return collection;
         }
-    }
-
-    [BsonIgnoreExtraElements]
-    public class Person
-    {
-        //public ObjectId Id { get; set; }
-        public string ID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int Age  { get; set; }
-        
     }
 }
