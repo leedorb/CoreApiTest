@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using app.Dal;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app.Controllers
@@ -14,20 +15,57 @@ namespace app.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var list = dbManager.GetPersonsList();
+
+                if (list.Count != 0)
+                {
+                    return Ok(list);
+                    //return new string[] { "value1", "value2" };
+                }
+
+                return new string[] { "Error", "db list empty" };
+            }
+            catch (Exception ex)
+            {
+
+                return new string[] { "Error", ex.Message };
+            }
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<string> Get(string id)
         {
-            return "value";
+            try
+            {
+                var person = dbManager.GetPerson(id);
+
+                if (person != null)
+                {
+                    return Ok(person);
+                }
+
+                return "Person " + id + " Not Found";
+            }
+            catch (Exception ex)
+            {
+                return "Error - " + ex.Message;
+            }
         }
 
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
         {
+            dbManager.InsertNewPerson(new Person
+            {
+                ID = value,
+                FirstName = "leedor",
+                LastName = "My Last Name",
+                Age = 38
+            });
         }
 
         // PUT api/values/5
