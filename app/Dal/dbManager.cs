@@ -12,7 +12,7 @@ namespace app.Dal
     {
         //const string connectionString = "mongodb://localhost:27017";
         //const string connectionString = "mongodb://mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017";
-        const string connectionString = "mongodb://mongouser:mongopass@mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017/sampledb";
+        const string connectionString = "mongodb://mongouser:mongopass@mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017/" + dbName;
         const string dbName = "sampledb";
 
         public static List<Person> GetPersonsList()
