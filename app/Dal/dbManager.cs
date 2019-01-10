@@ -11,7 +11,9 @@ namespace app.Dal
     public class dbManager
     {
         //const string connectionString = "mongodb://localhost:27017";
-        const string connectionString = "mongodb://mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017";
+        //const string connectionString = "mongodb://mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017";
+        const string connectionString = "mongodb://mongouser:mongopass@mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017/sampledb";
+        const string dbName = "sampledb";
 
         public static List<Person> GetPersonsList()
         {
@@ -20,7 +22,7 @@ namespace app.Dal
             var client = new MongoClient(connectionString);
 
             //Use the MongoClient to access the server
-            var database = client.GetDatabase("api-core-test");
+            var database = client.GetDatabase(dbName);
 
             //get mongodb collection
             var collection = database.GetCollection<Person>("Persons");
@@ -38,7 +40,7 @@ namespace app.Dal
             var client = new MongoClient(connectionString);
 
             //Use the MongoClient to access the server
-            var database = client.GetDatabase("api-core-test");
+            var database = client.GetDatabase(dbName);
 
             //get mongodb collection
             var collection = database.GetCollection<Person>("Persons");
@@ -56,7 +58,7 @@ namespace app.Dal
             var client = new MongoClient(connectionString);
 
             //Use the MongoClient to access the server
-            var database = client.GetDatabase("api-core-test");
+            var database = client.GetDatabase(dbName);
 
             //get mongodb collection
             var collection = database.GetCollection<Person>("Persons");
