@@ -11,7 +11,7 @@ namespace app.Dal
     public class dbManager
     {
         //const string connectionString = "mongodb://localhost:27017";
-        const string connectionString = "mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local";
+        const string connectionString = "mongodb://mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017";
 
         public static List<Person> GetPersonsList()
         {
