@@ -7,3 +7,4 @@
 /app/obj
 *.sln
 /app/app.csproj.user
+/app/appsettings.Development.json
