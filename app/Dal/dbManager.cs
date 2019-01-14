@@ -39,9 +39,36 @@ namespace app.Dal
             return person;
         }
 
-        public static async void InsertNewPerson(Person person)
+        public static void InsertNewPerson(Person person)
         {
-            await userCollection.InsertOneAsync(person);
+            if (GetPerson(person.ID) != null)
+            {
+                throw new Exception($"Person with id {person.ID} all ready exists");
+            }
+
+            userCollection.InsertOne(person);
+        }
+
+        public static void UpdatePerson(Person person)
+        {
+            if (GetPerson(person.ID) == null)
+            {
+                throw new Exception($"Person with id {person.ID} not exists");
+            }
+
+            DeletePerson(person.ID); //Delete old person
+            InsertNewPerson(person); //Insert updated person
+        }
+
+        public static void DeletePerson(string id)
+        {
+            if (GetPerson(id) == null)
+            {
+                throw new Exception($"Person with id {id} not exists");
+            }
+
+
+            userCollection.DeleteOne(p => p.ID == id);
         }
 
         private static IMongoCollection<Person> setPersonCollection()

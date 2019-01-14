@@ -14,4 +14,10 @@
     <PackageReference Include="MongoDB.Driver" Version="2.7.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System.Web.Http">
+      <HintPath>..\SolutionItems\System.Web.Http.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
