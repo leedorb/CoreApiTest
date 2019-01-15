@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
-using app.Dal;
+﻿using app.Dal;
 using app.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace app.Controllers
 {
@@ -23,17 +18,12 @@ namespace app.Controllers
             {
                 var list = dbManager.GetPersonsList();
 
-                if (list.Count != 0)
-                {
-                    return Ok(list);
-                }
+                return Ok(list);
 
-                return new string[] { "Error", "db list empty" };
             }
             catch (Exception ex)
             {
-
-                return new string[] { "Error", ex.Message };
+                return StatusCode(500, "Error - " + ex.Message);
             }
         }
 
@@ -50,7 +40,7 @@ namespace app.Controllers
                     return Ok(person);
                 }
 
-                return  StatusCode(400, "Person id " + id + " Not Found");
+                return StatusCode(400, "Person not Found");
             }
             catch (Exception ex)
             {
@@ -60,17 +50,9 @@ namespace app.Controllers
 
         // POST api/Person
         [HttpPost]
-        public ActionResult Post([FromBody] Person person)
+        public void Post([FromBody] Person person)
         {
-            try
-            {
-                dbManager.InsertNewPerson(person);
-                return Ok("Done");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Error - " + ex.Message);
-            }
+            dbManager.InsertNewPerson(person);
         }
 
         // PUT api/Person/5
@@ -95,17 +77,9 @@ namespace app.Controllers
 
         // DELETE api/Person/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
+        public void Delete(string id)
         {
-            try
-            {
-                dbManager.DeletePerson(id);
-                return Ok("Done");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Error - " + ex.Message);
-            }
-        }        
+            dbManager.DeletePerson(id);
+        }
     }
 }

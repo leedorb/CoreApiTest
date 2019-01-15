@@ -43,8 +43,7 @@ namespace app
 
             // Shows UseCors with CorsPolicyBuilder.
             app.UseCors(builder =>
-               builder.WithOrigins("*"));
-
+               builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             //app.UseHttpsRedirection();
 
             app.UseMvc();
