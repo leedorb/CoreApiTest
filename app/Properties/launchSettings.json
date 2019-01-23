@@ -33,7 +33,7 @@
     "IIS": {
       "commandName": "IIS",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "api/Person",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

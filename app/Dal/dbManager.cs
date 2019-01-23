@@ -1,4 +1,5 @@
 ﻿using app.Models;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
@@ -11,18 +12,19 @@ namespace app.Dal
 {
     public class dbManager
     {
-        //const string connectionString = "mongodb://localhost:27017";
-        const string dbName = "sampledb";
-        const string connectionString = "mongodb://mongouser:mongopass@mongodb-36-rhel7-shlomi1.leedor-test.svc.cluster.local:27017/" + dbName;
-        readonly static IMongoCollection<Person> userCollection;
+        const string collectionName = "Persons";
+        readonly IMongoCollection<Person> userCollection;
+        readonly DB_Config _config;
+        
 
-        static dbManager()
+        public dbManager(DB_Config dBConfig)
         {
+            _config = dBConfig;
             userCollection = setPersonCollection();
         }
 
 
-        public static List<Person> GetPersonsList()
+        public List<Person> GetPersonsList()
         {
             //get persons list
             var persons = userCollection.Find(p => true).ToList();
@@ -31,7 +33,7 @@ namespace app.Dal
         }
         
 
-        public static Person GetPerson(string id)
+        public  Person GetPerson(string id)
         {
             //get specific person by id
             var person = userCollection.Find(p => p.ID == id).FirstOrDefault();
@@ -39,7 +41,7 @@ namespace app.Dal
             return person;
         }
 
-        public static void InsertNewPerson(Person person)
+        public void InsertNewPerson(Person person)
         {
             if (GetPerson(person.ID) != null)
             {
@@ -49,7 +51,7 @@ namespace app.Dal
             userCollection.InsertOne(person);
         }
 
-        public static void UpdatePerson(Person person)
+        public void UpdatePerson(Person person)
         {
             if (GetPerson(person.ID) == null)
             {
@@ -60,7 +62,7 @@ namespace app.Dal
             InsertNewPerson(person); //Insert updated person
         }
 
-        public static void DeletePerson(string id)
+        public void DeletePerson(string id)
         {
             if (GetPerson(id) == null)
             {
@@ -71,16 +73,16 @@ namespace app.Dal
             userCollection.DeleteOne(p => p.ID == id);
         }
 
-        private static IMongoCollection<Person> setPersonCollection()
+        private IMongoCollection<Person> setPersonCollection()
         {
             // Create a MongoClient object by using the connection string
-            var client = new MongoClient(connectionString);
+            var client = new MongoClient(_config.DbConnectionString);
 
             //Use the MongoClient to access the server
-            var database = client.GetDatabase(dbName);
+            var database = client.GetDatabase(_config.DbName);
 
             //get mongodb collection
-            var collection = database.GetCollection<Person>("Persons");
+            var collection = database.GetCollection<Person>(collectionName);
 
             return collection;
         }

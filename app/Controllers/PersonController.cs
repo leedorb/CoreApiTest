@@ -1,6 +1,7 @@
 ﻿using app.Dal;
 using app.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 
@@ -10,13 +11,20 @@ namespace app.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
+        private readonly dbManager _dbManager;
+
+        public PersonController(IOptions<ControllerSettings> settings)
+        {
+            _dbManager = new dbManager(settings?.Value.DbConfig);
+        }
+
         // GET api/Person
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
             try
             {
-                var list = dbManager.GetPersonsList();
+                var list = _dbManager.GetPersonsList();
 
                 return Ok(list);
 
@@ -33,7 +41,7 @@ namespace app.Controllers
         {
             try
             {
-                var person = dbManager.GetPerson(id);
+                var person = _dbManager.GetPerson(id);
 
                 if (person != null)
                 {
@@ -52,7 +60,7 @@ namespace app.Controllers
         [HttpPost]
         public void Post([FromBody] Person person)
         {
-            dbManager.InsertNewPerson(person);
+            _dbManager.InsertNewPerson(person);
         }
 
         // PUT api/Person/5
@@ -66,7 +74,7 @@ namespace app.Controllers
                     return StatusCode(400, "Error - ID not match, ID can not be change");
                 }
 
-                dbManager.UpdatePerson(person);
+                _dbManager.UpdatePerson(person);
                 return Ok("Done");
             }
             catch (Exception ex)
@@ -79,7 +87,7 @@ namespace app.Controllers
         [HttpDelete("{id}")]
         public void Delete(string id)
         {
-            dbManager.DeletePerson(id);
+            _dbManager.DeletePerson(id);
         }
     }
 }
